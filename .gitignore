@@ -1,0 +1,6 @@
+home-assistant.log*
+configuration.yaml
+.storage
+.HA_VERSION
+deps
+__pycache__

@@ -1,0 +1,10 @@
+{
+    "domain": "value_saver",
+    "name": "Value Saver",
+    "version": "1.0",
+    "documentation": "https://www.example.com",
+    "requirements": [],
+    "dependencies": [],
+    "codeowners": []
+}
+
