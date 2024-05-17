@@ -4,13 +4,14 @@ import sys
 # Add the root directory of your integration to the Python path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-import asyncio
+import pytest
 from datetime import datetime, timedelta
 from unittest.mock import MagicMock, patch
 import homeassistant.util.dt as dt_util
 from custom_components.value_saver.sensor import DailyValueSensor
 
 
+@pytest.mark.asyncio
 async def test_async_added_to_hass():
     hass_mock = MagicMock()
     sensor = DailyValueSensor(hass_mock)
