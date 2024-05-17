@@ -17,7 +17,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install -r requirements.txt
+          pip install homeassistant
           pip install pytest
 
       - name: Run pytest
