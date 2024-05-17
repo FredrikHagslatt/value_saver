@@ -7,9 +7,11 @@ from homeassistant.helpers.restore_state import RestoreEntity
 
 logger = logging.getLogger(__name__)
 
+
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
     logger.info("Setting up platform with hass: %s", hass)
     async_add_entities([DailyValueSensor(hass)])
+
 
 """
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
@@ -21,9 +23,10 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
             return
         logger.info("Waiting for dependency to be ready...")
         await asyncio.sleep(10)
-    
+
     logger.error("Dependency not ready, aborting setup.")
 """
+
 
 class DailyValueSensor(RestoreEntity, SensorEntity):
     def __init__(self, hass):
@@ -45,7 +48,7 @@ class DailyValueSensor(RestoreEntity, SensorEntity):
         last_state = await self.async_get_last_state()
         if last_state is not None:
             self._state = last_state.state
-            self._last_update = last_state.attributes.get('last_update')
+            self._last_update = last_state.attributes.get("last_update")
         logger.info("async_added_to_hass called. Current state: %s", self._state)
 
     @property
@@ -56,14 +59,14 @@ class DailyValueSensor(RestoreEntity, SensorEntity):
         now = dt_util.now()
         today = now.date()
         logger.info("Update called. Now: %s, Today: %s", now, today)
-        
+
         if self._last_update != today:
             self._state = self.get_new_value()
             self._last_update = today
             self.schedule_update_ha_state()
 
     def get_new_value(self):
-        entity_id = 'sensor.some_other_sensor'
+        entity_id = "sensor.some_other_sensor"
         state = self.hass.states.get(entity_id)
         if state:
             logger.info("The state of %s is %s", entity_id, state.state)
