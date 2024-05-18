@@ -14,5 +14,5 @@ This integration saves a specific value every midnight and retains it across Hom
 Add the following to your `configuration.yaml`:
 
 ```yaml
-sensor:
   - platform: value_saver
+    entity_to_save: sensor.your_sensor_here

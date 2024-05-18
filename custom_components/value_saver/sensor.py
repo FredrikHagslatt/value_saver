@@ -1,4 +1,5 @@
 import logging
+import asyncio
 from datetime import datetime, timedelta
 import homeassistant.util.dt as dt_util
 
@@ -9,31 +10,27 @@ logger = logging.getLogger(__name__)
 
 
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
-    logger.info("Setting up platform with hass: %s", hass)
-    async_add_entities([DailyValueSensor(hass)])
-
-
-"""
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+    entity_to_save = config.get("entity_to_save")
+    logger.info("Preparing to setup value saver with dependency: %s", entity_to_save)
     # Wait until the dependent integration is ready
     for _ in range(10):  # Retry up to 10 times
-        if 'sensor.dependency_sensor' in hass.states.async_entity_ids():
+        if hass.states.get(entity_to_save):
             logger.info("Dependency is ready, setting up platform.")
-            async_add_entities([DailyValueSensor(hass)])
+            async_add_entities([DailyValueSensor(hass, entity_to_save=entity_to_save)])
             return
         logger.info("Waiting for dependency to be ready...")
         await asyncio.sleep(10)
 
-    logger.error("Dependency not ready, aborting setup.")
-"""
+    logger.error("Dependency '%s' not ready, aborting setup.", entity_to_save)
 
 
 class DailyValueSensor(RestoreEntity, SensorEntity):
-    def __init__(self, hass):
+    def __init__(self, hass, entity_to_save):
         self.hass = hass
+        self._entity_to_save = entity_to_save
         self._state = None
         self._last_update = None
-        logger.info("DailyValueSensor initialized with hass: %s", hass)
+        logger.info("Setting up sensor to save: %s", entity_to_save)
 
     @property
     def name(self):
@@ -66,11 +63,10 @@ class DailyValueSensor(RestoreEntity, SensorEntity):
             self.schedule_update_ha_state()
 
     def get_new_value(self):
-        entity_id = "sensor.some_other_sensor"
-        state = self.hass.states.get(entity_id)
+        state = self.hass.states.get(self._entity_to_save)
         if state:
-            logger.info("The state of %s is %s", entity_id, state.state)
+            logger.info("The state of %s is %s", self._entity_to_save, state.state)
             return state.state
         else:
-            logger.warning("Entity %s not found", entity_id)
-            return 42
+            logger.warning("Entity %s not found", self._entity_to_save)
+            return 0
