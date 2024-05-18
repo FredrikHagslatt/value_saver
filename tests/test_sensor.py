@@ -64,7 +64,8 @@ def test_update_new_day(hass_mock):
     sensor.get_new_value = MagicMock(return_value="mock_value")
 
     # Set _last_update to yesterday
-    yesterday = datetime.now().date() - timedelta(days=1)
+    today = datetime.now().date().isoformat()
+    yesterday = (datetime.now().date() - timedelta(days=1)).isoformat()
     sensor._last_update = yesterday
 
     # Call update
@@ -73,7 +74,7 @@ def test_update_new_day(hass_mock):
     # Assert that state and last_update were updated
     sensor.get_new_value.assert_called_once()
     assert sensor._state == "mock_value"
-    assert sensor._last_update == datetime.now().date()
+    assert sensor._last_update == today
 
 
 def test_update_same_day(hass_mock):
@@ -84,8 +85,8 @@ def test_update_same_day(hass_mock):
     sensor.get_new_value = MagicMock(return_value="mock_value")
 
     # Set _last_update to today
-    yesterday = datetime.now().date()
-    sensor._last_update = yesterday
+    today = datetime.now().date().isoformat()
+    sensor._last_update = today
 
     # Call update
     sensor.update()
@@ -93,7 +94,7 @@ def test_update_same_day(hass_mock):
     # Assert that state and last_update were not updated
     sensor.get_new_value.assert_not_called()
     assert sensor._state == "init_value"
-    assert sensor._last_update == datetime.now().date()
+    assert sensor._last_update == today
 
 
 def test_get_new_value(hass_mock):

@@ -13,13 +13,13 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     entity_to_save = config.get("entity_to_save")
     logger.info("Preparing to setup value saver with dependency: %s", entity_to_save)
     # Wait until the dependent integration is ready
-    for _ in range(10):  # Retry up to 10 times
+    for _ in range(20):  # Retry up to 10 times
         if hass.states.get(entity_to_save):
             logger.info("Dependency is ready, setting up platform.")
             async_add_entities([DailyValueSensor(hass, entity_to_save=entity_to_save)])
             return
         logger.info("Waiting for dependency to be ready...")
-        await asyncio.sleep(10)
+        await asyncio.sleep(5)
 
     logger.error("Dependency '%s' not ready, aborting setup.", entity_to_save)
 
@@ -54,13 +54,18 @@ class DailyValueSensor(RestoreEntity, SensorEntity):
 
     def update(self):
         now = dt_util.now()
-        today = now.date()
-        logger.info("Update called. Now: %s, Today: %s", now, today)
+        today = now.date().isoformat()
+        logger.info(
+            "Update called. Last update: %s, Today: %s", self._last_update, today
+        )
 
         if self._last_update != today:
             self._state = self.get_new_value()
             self._last_update = today
             self.schedule_update_ha_state()
+            logger.info("Updating value to: %s", self._state)
+        else:
+            logger.info("Not updating value")
 
     def get_new_value(self):
         state = self.hass.states.get(self._entity_to_save)
