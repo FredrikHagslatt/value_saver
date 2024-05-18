@@ -1,9 +1,13 @@
 {
     "domain": "value_saver",
     "name": "Value Saver",
-    "version": "1.0",
-    "documentation": "https://www.example.com",
-    "requirements": [],
+    "codeowners": ["@FredrikHagslatt"],
+    "config_flow": true,
     "dependencies": [],
-    "codeowners": []
+    "documentation": "https://github.com/FredrikHagslatt/value_saver",
+    "integration_type": "helper",
+    "iot_class": "local_polling",
+    "issue_tracker": "https://github.com/FredrikHagslatt/value_saver/issues",
+    "requirements": [],
+    "version": "1.0"
 }

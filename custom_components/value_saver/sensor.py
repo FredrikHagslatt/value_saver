@@ -1,6 +1,5 @@
 import logging
 import asyncio
-from datetime import datetime, timedelta
 import homeassistant.util.dt as dt_util
 
 from homeassistant.components.sensor import SensorEntity
